@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>ari ari</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:#ffc0cb;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial,sans-serif;
+}
+
+/* 🌟 TÍTULO */
+h1{
+  font-size:56px;
+  margin-bottom:20px;
+  z-index:2;
+  font-family:'Trebuchet MS','Comic Sans MS',sans-serif;
+  background:linear-gradient(45deg,#4da6ff,#1e90ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  letter-spacing:2px;
+}
+
+@keyframes glow{
+  0%{text-shadow:0 0 6px rgba(77,166,255,.4);} 
+  50%{text-shadow:0 0 18px rgba(77,166,255,.9);} 
+  100%{text-shadow:0 0 6px rgba(77,166,255,.4);} 
+}
+.glow{animation:glow 1.5s ease-in-out infinite;}
+
+/* ⭐ ESTRELLAS */
+#stars{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:0;
+}
+
+/* 🎬 ESCENA */
+.scene{
+  display:flex;
+  align-items:center;
+  z-index:2;
+}
+
+#container{
+  cursor:pointer;
+  transition:transform .4s ease;
+}
+
+img{display:none;}
+
+/* 💬 DIÁLOGO */
+#dialog{
+  display:none;
+  margin-left:20px;
+  background:white;
+  border-radius:15px;
+  padding:15px 20px;
+  width:220px;
+  box-shadow:0 8px 20px rgba(0,0,0,.2);
+}
+
+.options{
+  display:flex;
+  justify-content:space-between;
+}
+
+.options button{
+  border:none;
+  padding:8px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.bien{background:#9be7a1;}
+.mal{background:#f6a5a5;}
+</style>
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+
+<h1 id="title">Ari Ari</h1>
+
+<div class="scene">
+  <div id="container">
+    <canvas id="canvas"></canvas>
+    <img id="gif" src="doraemon.gif">
+  </div>
+
+  <div id="dialog">
+    <p>¿Cómo te fue hoy?</p>
+    <div class="options">
+      <button class="bien">😊 Bien</button>
+      <button class="mal" id="btnMal">😞 Mal</button>
+    </div>
+  </div>
+</div>
+
+<audio id="bgMusic" src="musica.mp3" loop></audio>
+
+<script>
+/* ⭐ ESTRELLAS */
+const starCanvas=document.getElementById("stars");
+const sctx=starCanvas.getContext("2d");
+starCanvas.width=window.innerWidth;
+starCanvas.height=window.innerHeight;
+
+const stars=[];
+for(let i=0;i<80;i++){
+  stars.push({
+    x:Math.random()*starCanvas.width,
+    y:Math.random()*starCanvas.height,
+    r:Math.random()*3+2,
+    v:Math.random()*1.5+.5
+  });
+}
+
+function drawStar(x,y,r){
+  sctx.beginPath();
+  for(let i=0;i<5;i++){
+    sctx.lineTo(x+r*Math.cos((18+i*72)*Math.PI/180),
+                y-r*Math.sin((18+i*72)*Math.PI/180));
+    sctx.lineTo(x+(r/2)*Math.cos((54+i*72)*Math.PI/180),
+                y-(r/2)*Math.sin((54+i*72)*Math.PI/180));
+  }
+  sctx.closePath();
+  sctx.fillStyle="#4da6ff";
+  sctx.fill();
+}
+
+function animateStars(){
+  sctx.clearRect(0,0,starCanvas.width,starCanvas.height);
+  stars.forEach(st=>{
+    drawStar(st.x,st.y,st.r);
+    st.y+=st.v;
+    if(st.y>starCanvas.height){
+      st.y=-10;
+      st.x=Math.random()*starCanvas.width;
+    }
+  });
+  requestAnimationFrame(animateStars);
+}
+animateStars();
+
+/* 🎬 DORAEMON */
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+const gif=document.getElementById("gif");
+const dialog=document.getElementById("dialog");
+const container=document.getElementById("container");
+const music=document.getElementById("bgMusic");
+const title=document.getElementById("title");
+const btnMal=document.getElementById("btnMal");
+const btnBien=document.querySelector(".bien");
+
+music.volume=0.15;
+
+const img=new Image();
+img.src="doraemon_static.png";
+img.onload=()=>{
+  canvas.width=img.width;
+  canvas.height=img.height;
+  ctx.drawImage(img,0,0);
+};
+
+container.addEventListener("click",()=>{
+  if(music.paused)music.play();
+
+  container.style.transform="translateX(-40px)";
+  dialog.style.display="block";
+  title.classList.add("glow");
+
+  canvas.style.display="none";
+  gif.style.display="block";
+  gif.src="";
+  gif.src="doraemon.gif";
+
+  setTimeout(()=>{
+    gif.style.display="none";
+    canvas.style.display="block";
+    ctx.drawImage(img,0,0);
+    container.style.transform="translateX(0)";
+    dialog.style.display="none";
+    title.classList.remove("glow");
+  },3000);
+});
+
+/* ❌ BOTÓN MAL → OTRO HTML */
+btnMal.addEventListener("click",()=>{
+  window.location.href="mal.html";
+});
+
+/* ✅ BOTÓN BIEN → OTRO HTML */
+btnBien.addEventListener("click",()=>{
+  window.location.href="bien.html";
+});
+</script>
+
+</body>
+</html>

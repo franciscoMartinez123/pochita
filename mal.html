@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>No fue un buen día</title>
+
+<style>
+  body{
+    margin:0;
+    background:white;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:30px;
+    font-family:Arial, sans-serif;
+  }
+
+  video{
+    width:70%;
+    max-width:900px;
+    height:auto;
+    outline:none;
+  }
+
+  .mensaje{
+    background:#f2f2f2;
+    padding:15px 20px;
+    border-radius:15px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.2);
+    cursor:pointer;
+    font-size:16px;
+    user-select:none;
+  }
+
+  .mensaje:hover{
+    background:#e6e6e6;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- 🎥 VIDEO -->
+<video id="video"
+  src="depresion.mp4"
+  autoplay
+  muted
+  loop
+  playsinline
+  disablePictureInPicture
+  controlslist="nodownload nofullscreen noremoteplayback">
+</video>
+
+<!-- 💬 MENSAJE -->
+<div class="mensaje" id="btnSound">
+  UNDEME
+</div>
+
+<script>
+const video = document.getElementById("video");
+const btnSound = document.getElementById("btnSound");
+
+btnSound.addEventListener("click", () => {
+  video.muted = false;  // 🔊 activa el sonido del mp4
+  video.play();
+  btnSound.style.display = "none"; // oculta el mensaje
+});
+</script>
+
+</body>
+</html>
